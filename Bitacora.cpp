@@ -55,54 +55,20 @@ void Bitacora::leerArchivo(std::string Archivo_a_leer){
         error_.pop_back();
         dateTime date(mes_,diaInt,horasInt,minutosInt,segundosInt);
         Registro tmpRegistro(mes_, dia_, horas_, minutos_, segundos_, ip_, error_, date);
-        listaRegistros.push_back(tmpRegistro);
+        listaRegistros.addLast(tmpRegistro);
+        
     }
-    //ordenaLista();
-    //busquedaFechas();
+    listaRegistros.quickSort();
 }
 
 int Bitacora::getSize(){
-    return listaRegistros.size();
+    return listaRegistros.getNumElements();
 }
 
 void Bitacora::print() {
-  for (int i=0; i < listaRegistros.size(); i++) {
-    std::cout << listaRegistros[i].getTexto() << std::endl;
+  for (int i=0; i < listaRegistros.getNumElements(); i++) {
+    std::cout << listaRegistros.getData(i).getTexto()<< std::endl;
   }
-}
-
-void Bitacora::ordenaLista(){
-    quickSort(0,getSize()-1);
-}
-
-void Bitacora::quickSort(int low, int high) {
-  if (low < high) {
-    // encontrar pivote de la particion
-    int pivot = partition(low, high);
-    // ordenar la mitad izquierda y derecha
-    quickSort(low, pivot-1);
-    quickSort(pivot+1, high);
-  }
-}
-
-int Bitacora::partition(int low, int high){
-    dateTime tDate("   ",0,0,0,0);
-    dateTime pivot("   ",0,0,0,0);
-    Registro temp("   ","   ","   ","   ","   ","   ","   ", tDate);
-    pivot = this->listaRegistros[high].getDate();
-    int i = low -1;
-    for (int j = low; j < high; j++){
-        if (this->listaRegistros[j].getDate() < pivot){
-        i++;
-        temp = this->listaRegistros[i];
-        this->listaRegistros[i] = this->listaRegistros[j];
-        this->listaRegistros[j] = temp;
-        }
-    }
-    temp = this->listaRegistros[i + 1];
-    this->listaRegistros[i+1] = this->listaRegistros[high];
-    this->listaRegistros[high] = temp;
-    return i+1;
 }
 
 void Bitacora::busquedaFechas(){
@@ -115,7 +81,6 @@ void Bitacora::busquedaFechas(){
     int horas = stoi(fechaInicial.substr(7, 2));
     int minutos = stoi(fechaInicial.substr(10, 2));
     int segundos = stoi(fechaInicial.substr(13, 2));
-    std::cout<<segundos<<std::endl;
     dateTime fInicial(mes,dia,horas,minutos,segundos);
     Registro fechaI(mes,fechaInicial.substr(4, 2),fechaInicial.substr(7, 2),fechaInicial.substr(10, 2),fechaInicial.substr(13, 2),"","",fInicial);
 
@@ -136,15 +101,14 @@ void Bitacora::busquedaFechas(){
 }
 
 int Bitacora::busquedaBinaria(int size, Registro fecha_completa){
-    //if fecha completa == this->listaRegistros[h]){
     int low = 0;
     int high = size-1;
     while(low <= high){
         int h = low + (high - low)/2;
-        if (fecha_completa == this->listaRegistros[h]){
-            return h;
+        if (fecha_completa == this->listaRegistros.getData(h)){
+            return h;//posición
         }
-        else if ( fecha_completa < this->listaRegistros[h]){
+        else if ( fecha_completa < this->listaRegistros.getData(h)){
             high = h -1;
         }
         else{
@@ -163,11 +127,13 @@ void Bitacora::buscarRegistros(int inicial, int final){
     }
     else{
         std::cout<<"\nResultado: "<<final-inicial+1<<" Registros."<<std::endl;
+        std::ofstream file;
+        file.open("busqueda_ordenada.txt");
         for (int i = inicial; i < final+1; i++){
-            std::cout << listaRegistros[i].getTexto() << std::endl;
+          file<<this->listaRegistros.getData(i).getTexto()<<"\n";
         }
     }
-    nuevoArchivo();
+    
 }
 
 void Bitacora::nuevoArchivo(){
@@ -175,7 +141,7 @@ void Bitacora::nuevoArchivo(){
     file.open("bitacora_ordenada.txt");
     for (int i = 0; i < getSize()+1; i++)
     {
-        file<<this->listaRegistros[i].getTexto()<<"\n";
+        file<<this->listaRegistros.getData(i).getTexto()<<"\n";
     }
     file.close();
 }

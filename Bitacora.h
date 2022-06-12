@@ -5,10 +5,13 @@
   #include <sstream>
   #include <vector>
   #include "Registro.h"
+  #include "DLinkedList.h"
 
+  // 
   class Bitacora {
     private:
-      std::vector<Registro> listaRegistros;//Crea el vector de tipo Registro
+      DLinkedList <Registro> listaRegistros;
+      //std::vector<Registro> listaRegistros;//Crea el vector de tipo Registro
       std::string linea, campo, horaCompleta;//Para la lectura del archivo
 
     public:
@@ -19,13 +22,8 @@
       void leerArchivo(std::string Archivo_a_leer);
 
       //Lo que nos proporciona información de la lista
-      int getSize();
+      int getSize();//no da el numElemnts
       void print();
-      
-      //Métodos para el quickSort (ordena fechas)
-      void ordenaLista();
-      void quickSort(int low, int high);
-      int partition(int low, int high);
 
       //Métodos para la busqueda
       void busquedaFechas();

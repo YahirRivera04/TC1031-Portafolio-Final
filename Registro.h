@@ -17,6 +17,7 @@
 
       
       public:
+        Registro();
         Registro(std::string _mes, std::string _dia, std::string _horas, std::string _minutos, std::string _segundos, std::string _ip, std::string _error, dateTime _date);
         std::string getTexto();
         dateTime getDate();
